@@ -1,4 +1,4 @@
-addrbind: '0.0.0.0:7788'
+addrbind: '0.0.0.0:7888'
 pathdbroot: 'dat'
 listdb:
   - name: 'tradingdb'
