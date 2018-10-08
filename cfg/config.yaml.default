@@ -1,0 +1,9 @@
+addrBind: 0.0.0.0:7788
+pathDBRoot: ./dat
+listDB:
+  - name: tradingdb
+    engine: leveldb
+    pathDB: ./dat/tradingdb
+  - name: tradingdb1
+    engine: leveldb
+    pathDB: ./dat/tradingdb    

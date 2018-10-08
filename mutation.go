@@ -32,6 +32,7 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 				// },
 			},
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+				// ankadb.DBMgr
 				// rand.Seed(time.Now().UnixNano())
 				// product := Product{
 				// 	ID:    int64(rand.Intn(100000)), // generate random ID
