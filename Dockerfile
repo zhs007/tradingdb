@@ -17,7 +17,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o tradingdb . \
     && mkdir /home/tradingdb/dat \
     && mkdir /home/tradingdb/cfg \
     && cp tradingdb /home/tradingdb/ \
-    && cp cfg/config.yaml.default /home/tradingdb/dat/config.yaml
+    && cp cfg/config.yaml.default /home/tradingdb/cfg/config.yaml
 
 FROM scratch
 WORKDIR /home/tradingdb
