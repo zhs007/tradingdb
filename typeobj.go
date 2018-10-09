@@ -46,6 +46,9 @@ var candleChunkType = graphql.NewObject(
 			"name": &graphql.Field{
 				Type: graphql.NewNonNull(graphql.String),
 			},
+			"keyID": &graphql.Field{
+				Type: graphql.NewNonNull(graphql.String),
+			},
 			"startTime": &graphql.Field{
 				Type: graphql.NewNonNull(graphqlext.Timestamp),
 			},

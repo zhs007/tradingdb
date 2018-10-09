@@ -11,11 +11,12 @@ import (
 )
 
 func importCSV(ctx context.Context, dbname string, filename string, c ankadbclient.AnkaClient) error {
-	strQuery := `mutation InsertCandles($code:String!, $name:String!, $candle:CandleInput){
-		insertCandles(code:$code,name:$name,candle:$candle){
-			code,
-			name}
-		}`
+	strQuery := `mutation NewChandleChunk($code: String!, $name: String!, $startTime: Timestamp!, $endTime: Timestamp!) {
+		newCandleChunk(code: $code, name: $name, startTime: $startTime, endTime: $endTime) {
+		  keyID
+		}
+	  }`
+
 	fr, err := os.Open(filename)
 	if err != nil {
 		return err
