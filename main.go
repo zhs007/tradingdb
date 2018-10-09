@@ -9,7 +9,7 @@ import (
 // var singleAnkaDB *ankadb.AnkaDB
 
 func main() {
-	fmt.Print("tradingdb init...")
+	fmt.Print("tradingdb init...\n")
 
 	cfg, err := ankadb.LoadConfig("./cfg/config.yaml")
 	if err != nil {
@@ -27,11 +27,11 @@ func main() {
 		return
 	}
 
-	fmt.Print("tradingdb already start...")
+	fmt.Print("tradingdb already start...\n")
 
 	ankaDB.Start()
 
-	fmt.Print("tradingdb end...")
+	fmt.Print("tradingdb end...\n")
 
 	// mapvar := make(map[string]interface{})
 
