@@ -10,7 +10,7 @@ import (
 	"github.com/zhs007/ankadb/client"
 )
 
-func importCSV(ctx context.Context, filename string, c ankadbclient.AnkaClient) error {
+func importCSV(ctx context.Context, dbname string, filename string, c ankadbclient.AnkaClient) error {
 	strQuery := `mutation InsertCandles($code:String!, $name:String!, $candle:CandleInput){
 		insertCandles(code:$code,name:$name,candle:$candle){
 			code,
@@ -41,7 +41,7 @@ func importCSV(ctx context.Context, filename string, c ankadbclient.AnkaClient) 
 			return err1
 		}
 
-		c.Query(ctx, strQuery, string(buf))
+		c.Query(ctx, dbname, strQuery, string(buf))
 		// fmt.Println(record)
 	}
 

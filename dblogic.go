@@ -1,6 +1,8 @@
 package main
 
 import (
+	"context"
+
 	"github.com/graphql-go/graphql"
 
 	"github.com/zhs007/ankadb"
@@ -26,11 +28,12 @@ func newTradingDB() ankadb.DBLogic {
 	}
 }
 
-func (logic *tradingDB) OnQuery(request string, values map[string]interface{}) (*graphql.Result, error) {
+func (logic *tradingDB) OnQuery(ctx context.Context, request string, values map[string]interface{}) (*graphql.Result, error) {
 	result := graphql.Do(graphql.Params{
 		Schema:         logic.schema,
 		RequestString:  request,
 		VariableValues: values,
+		Context:        ctx,
 	})
 	// if len(result.Errors) > 0 {
 	// 	fmt.Printf("wrong result, unexpected errors: %v", result.Errors)

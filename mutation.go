@@ -1,8 +1,13 @@
 package main
 
 import (
+	"github.com/golang/protobuf/proto"
 	"github.com/graphql-go/graphql"
+	"github.com/zhs007/ankadb"
+	"github.com/zhs007/ankadb/err"
 	"github.com/zhs007/ankadb/graphqlext"
+	"github.com/zhs007/ankadb/proto"
+	pb "github.com/zhs007/tradingdb/proto"
 )
 
 var mutationType = graphql.NewObject(graphql.ObjectConfig{
@@ -24,24 +29,37 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 				"endTime": &graphql.ArgumentConfig{
 					Type: graphql.NewNonNull(graphqlext.Timestamp),
 				},
-				// "candle": &graphql.ArgumentConfig{
-				// 	Type: candleInputType,
-				// },
-				// "candles": &graphql.ArgumentConfig{
-				// 	Type: graphql.NewList(candleType),
-				// },
 			},
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-				// ankadb.DBMgr
-				// rand.Seed(time.Now().UnixNano())
-				// product := Product{
-				// 	ID:    int64(rand.Intn(100000)), // generate random ID
-				// 	Name:  params.Args["name"].(string),
-				// 	Info:  params.Args["info"].(string),
-				// 	Price: params.Args["price"].(float64),
-				// }
-				// products = append(products, product)
-				return nil, nil
+				curdb := ankadb.GetContextValueDatabase(params.Context, interface{}("curdb"))
+				if curdb == nil {
+					return nil, ankadberr.NewError(ankadbpb.CODE_CTX_CURDB_ERR)
+				}
+
+				code := params.Args["code"].(string)
+				name := params.Args["name"].(string)
+				st := params.Args["startTime"].(int64)
+				keyid := makeKeyID(code, name, st)
+
+				cc := &pb.CandleChunk{
+					Code:      code,
+					Name:      name,
+					StartTime: st,
+					EndTime:   params.Args["endTime"].(int64),
+					KeyID:     keyid,
+				}
+
+				data, err := proto.Marshal(cc)
+				if err != nil {
+					return nil, ankadberr.NewError(ankadbpb.CODE_PROTOBUF_ENCODE_ERR)
+				}
+
+				err = curdb.Put([]byte(keyid), data)
+				if err != nil {
+					return nil, ankadberr.NewError(ankadbpb.CODE_DB_PUT_ERR)
+				}
+
+				return cc, nil
 			},
 		},
 	},

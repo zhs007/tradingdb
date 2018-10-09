@@ -19,5 +19,6 @@ message CandleChunk {
     string name = 2;
     int64 startTime = 3;
     int64 endTime = 4;
-    
+    string keyID = 5;
+    repeated Candle candles = 6;
 }

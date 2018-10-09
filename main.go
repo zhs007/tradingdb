@@ -6,6 +6,8 @@ import (
 	"github.com/zhs007/ankadb"
 )
 
+// var singleAnkaDB *ankadb.AnkaDB
+
 func main() {
 	fmt.Print("tradingdb init...")
 
@@ -18,8 +20,8 @@ func main() {
 
 	// ankadb.SaveConfig("./cfg/tmp.yaml", cfg)
 
-	ankadb := ankadb.NewAnkaDB(*cfg, newTradingDB())
-	if ankadb == nil {
+	ankaDB := ankadb.NewAnkaDB(*cfg, newTradingDB())
+	if ankaDB == nil {
 		fmt.Print("tradingdb.NewAnkaDB() ")
 
 		return
@@ -27,7 +29,7 @@ func main() {
 
 	fmt.Print("tradingdb already start...")
 
-	ankadb.Start()
+	ankaDB.Start()
 
 	fmt.Print("tradingdb end...")
 
