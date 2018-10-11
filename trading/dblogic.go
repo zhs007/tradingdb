@@ -1,4 +1,4 @@
-package main
+package trading
 
 import (
 	"context"
@@ -10,11 +10,13 @@ import (
 
 // var curTypes = []graphql.Type{candleType}
 
+// tradingDB -
 type tradingDB struct {
 	schema graphql.Schema
 }
 
-func newTradingDB() ankadb.DBLogic {
+// NewTradingDB -
+func NewTradingDB() ankadb.DBLogic {
 	var schema, _ = graphql.NewSchema(
 		graphql.SchemaConfig{
 			Query:    queryType,
@@ -28,6 +30,7 @@ func newTradingDB() ankadb.DBLogic {
 	}
 }
 
+// OnQuery -
 func (logic *tradingDB) OnQuery(ctx context.Context, request string, values map[string]interface{}) (*graphql.Result, error) {
 	result := graphql.Do(graphql.Params{
 		Schema:         logic.schema,

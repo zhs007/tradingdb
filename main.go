@@ -4,6 +4,8 @@ import (
 	"fmt"
 
 	"github.com/zhs007/ankadb"
+
+	"github.com/zhs007/tradingdb/trading"
 )
 
 // var singleAnkaDB *ankadb.AnkaDB
@@ -20,7 +22,7 @@ func main() {
 
 	// ankadb.SaveConfig("./cfg/tmp.yaml", cfg)
 
-	ankaDB := ankadb.NewAnkaDB(*cfg, newTradingDB())
+	ankaDB := ankadb.NewAnkaDB(*cfg, trading.NewTradingDB())
 	if ankaDB == nil {
 		fmt.Print("tradingdb.NewAnkaDB() ")
 

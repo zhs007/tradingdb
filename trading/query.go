@@ -1,4 +1,4 @@
-package main
+package trading
 
 import (
 	"github.com/golang/protobuf/proto"
