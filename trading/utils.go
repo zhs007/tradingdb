@@ -90,7 +90,7 @@ func ForEachCSV(filename string, funcForEach FuncForEachCSV) error {
 			continue
 		}
 
-		tm2, err := time.Parse("2006-01-02 03:04:05", record[mapHead["curTime"]])
+		tm2, err := time.Parse("2006-01-02 15:04:05", record[mapHead["curTime"]])
 		if err != nil {
 			return err
 		}

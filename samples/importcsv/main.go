@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 
 	"github.com/zhs007/ankadb/client"
+	"github.com/zhs007/ankadb/err"
+	"github.com/zhs007/ankadb/proto"
 	"github.com/zhs007/tradingdb/trading"
 )
 
@@ -16,6 +18,15 @@ var strNewChandleChunk = `mutation NewChandleChunk($code: String!, $name: String
 
 var strInsertChandle = `mutation InsertCandle($keyID: String!, $candle: CandleInput!) {
 	insertCandle(keyID: $keyID, candle: $candle) {
+	  keyID,
+	  candles {
+		curTime
+	  }
+	}
+  }`
+
+var strInsertChandles = `mutation InsertCandles($keyID: String!, $candles: [CandleInput]!) {
+	insertCandles(keyID: $keyID, candles: $candles) {
 	  keyID,
 	  candles {
 		curTime
@@ -46,14 +57,71 @@ func importCSV(ctx context.Context, dbname string, code string, name string, fil
 				if err != nil {
 					return err
 				}
-				c.Query(ctx, dbname, strNewChandleChunk, string(buf))
 
-				for _, v := range lst {
-					buf, err := json.Marshal(v)
-					if err != nil {
-						return err
-					}
-					c.Query(ctx, dbname, strInsertChandle, string(buf))
+				queryReply, err := c.Query(ctx, dbname, strNewChandleChunk, string(buf))
+				if err != nil {
+					return err
+				}
+
+				if queryReply.Code != ankadbpb.CODE_OK {
+					return ankadberr.NewError(queryReply.Code)
+				}
+
+				var mapResult map[string]interface{}
+				if err := json.Unmarshal([]byte(queryReply.Result), &mapResult); err != nil {
+					return err
+				}
+
+				var mapData map[string]interface{}
+				var ok bool
+				if mapData, ok = mapResult["data"].(map[string]interface{}); !ok {
+					return ankadberr.NewError(ankadbpb.CODE_RESULT_NO_DATA)
+				}
+
+				var mapNewCC map[string]interface{}
+				if mapNewCC, ok = mapData["newCandleChunk"].(map[string]interface{}); !ok {
+					return ankadberr.NewError(ankadbpb.CODE_RESULT_DATA_INVALID)
+				}
+
+				var curKeyID string
+				if curKeyID, ok = mapNewCC["keyID"].(string); !ok {
+					return ankadberr.NewError(ankadbpb.CODE_RESULT_DATA_INVALID)
+				}
+
+				// curKeyID := retNewCC.(string)
+
+				// fmt.Print(queryReply)
+
+				// for _, v := range lst {
+				// 	mapInsC := make(map[string]interface{})
+				// 	mapInsC["keyID"] = curKeyID
+				// 	mapInsC["candle"] = v
+
+				// 	buf, err := json.Marshal(mapInsC)
+				// 	if err != nil {
+				// 		return err
+				// 	}
+
+				// 	queryReply, err := c.Query(ctx, dbname, strInsertChandle, string(buf))
+
+				// 	if queryReply.Code != ankadbpb.CODE_OK {
+				// 		return ankadberr.NewError(queryReply.Code)
+				// 	}
+				// }
+
+				mapInsC := make(map[string]interface{})
+				mapInsC["keyID"] = curKeyID
+				mapInsC["candles"] = lst
+
+				buf, err1 := json.Marshal(mapInsC)
+				if err1 != nil {
+					return err1
+				}
+
+				queryReply1, err1 := c.Query(ctx, dbname, strInsertChandles, string(buf))
+
+				if queryReply1.Code != ankadbpb.CODE_OK {
+					return ankadberr.NewError(queryReply1.Code)
 				}
 
 				lst = nil
@@ -106,7 +174,7 @@ func importCSV(ctx context.Context, dbname string, code string, name string, fil
 func main() {
 	c := ankadbclient.NewClient()
 
-	importCSV(context.Background(), "tradingdb", "pta", "pta1601", "TA601.csv", c)
-
 	c.Start("0.0.0.0:7788")
+
+	importCSV(context.Background(), "tradingdb", "pta", "pta1601", "TA601.csv", c)
 }
