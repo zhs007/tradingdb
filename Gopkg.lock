@@ -67,7 +67,7 @@
     "graphqlext",
     "proto"
   ]
-  revision = "6b22cd9a8a5ea23aaf9cf6410e50a8cff9a48f61"
+  revision = "25166dac3d883b695af283db73310111b55e4f45"
 
 [[projects]]
   branch = "master"
