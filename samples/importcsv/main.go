@@ -55,6 +55,8 @@ func insCSVData(ctx context.Context, dbname string, code string, name string, ls
 		return err
 	}
 
+	fmt.Print(queryReply.Result)
+
 	if queryReply.Code != ankadbpb.CODE_OK {
 		return ankadberr.NewError(queryReply.Code)
 	}
