@@ -8,8 +8,8 @@ import (
 	"time"
 )
 
-func makeKeyID(code string, name string, startTime int64) string {
-	tm := time.Unix(startTime, 0)
+func makeKeyID(code string, name string, startTime int64, loc *time.Location) string {
+	tm := time.Unix(startTime, 0).In(loc)
 
 	if code == "pta" {
 		ts := tm.Format("20060102")

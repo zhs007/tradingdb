@@ -1,6 +1,8 @@
 package trading
 
 import (
+	"time"
+
 	"github.com/golang/protobuf/proto"
 	"github.com/graphql-go/graphql"
 	"github.com/zhs007/ankadb"
@@ -36,10 +38,15 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 					return nil, ankadberr.NewError(ankadbpb.CODE_CTX_CURDB_ERR)
 				}
 
+				loc, err := time.LoadLocation("Asia/Shanghai")
+				if err != nil {
+					return nil, err
+				}
+
 				code := params.Args["code"].(string)
 				name := params.Args["name"].(string)
 				st := params.Args["startTime"].(int64)
-				keyid := makeKeyID(code, name, st)
+				keyid := makeKeyID(code, name, st, loc)
 
 				cc := &pb.CandleChunk{
 					Code:      code,
