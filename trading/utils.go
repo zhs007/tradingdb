@@ -47,6 +47,7 @@ func countKeyID(code string, name string, startTime int64, endTime int64) []stri
 
 			lst = append(lst, name+ts+"0")
 			lst = append(lst, name+ts+"1")
+			lst = append(lst, name+ts+"2")
 
 			startTime += 24 * 60 * 60
 		}

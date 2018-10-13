@@ -284,7 +284,8 @@ func importCSV(ctx context.Context, dbname string, code string, name string, loc
 func main() {
 	c := ankadbclient.NewClient()
 
-	c.Start("0.0.0.0:7788")
+	// c.Start("0.0.0.0:7788")
+	c.Start("47.90.46.159:7788")
 
 	importCSV(context.Background(), "tradingdb", "pta", "pta1601", "Asia/Shanghai", "TA601F.csv", c)
 }
