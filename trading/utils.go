@@ -16,6 +16,8 @@ func makeKeyID(code string, name string, startTime int64) string {
 
 		ch := tm.Hour()
 		if ch >= 21 {
+			return name + ts + "2"
+		} else if ch >= 13 {
 			return name + ts + "1"
 		}
 
@@ -57,7 +59,12 @@ func countKeyID(code string, name string, startTime int64, endTime int64) []stri
 type FuncForEachCSV func(mapval map[string]interface{}) error
 
 // ForEachCSV - for each csv file
-func ForEachCSV(filename string, funcForEach FuncForEachCSV) error {
+func ForEachCSV(filename string, local string, funcForEach FuncForEachCSV) error {
+	loc, err := time.LoadLocation(local)
+	if err != nil {
+		return err
+	}
+
 	fr, err := os.Open(filename)
 	if err != nil {
 		return err
@@ -66,14 +73,19 @@ func ForEachCSV(filename string, funcForEach FuncForEachCSV) error {
 	csvr := csv.NewReader(fr)
 	lines := 0
 	mapHead := make(map[string]int)
+	// csveof := false
 
 	for {
 		record, err := csvr.Read()
 		if err == io.EOF {
-			break
-		}
+			// csveof = true
+			err1 := funcForEach(nil)
+			if err1 != nil {
+				return err1
+			}
 
-		if err != nil {
+			break
+		} else if err != nil {
 			return err
 		}
 
@@ -90,7 +102,7 @@ func ForEachCSV(filename string, funcForEach FuncForEachCSV) error {
 			continue
 		}
 
-		tm2, err := time.Parse("2006-01-02 15:04:05", record[mapHead["curTime"]])
+		tm2, err := time.ParseInLocation("2006-01-02 15:04:05", record[mapHead["curTime"]], loc)
 		if err != nil {
 			return err
 		}
@@ -138,6 +150,10 @@ func ForEachCSV(filename string, funcForEach FuncForEachCSV) error {
 		if err1 != nil {
 			return err1
 		}
+
+		// if csveof {
+		// 	break
+		// }
 	}
 
 	return nil
