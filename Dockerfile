@@ -10,8 +10,6 @@ COPY ./Gopkg.* $GOPATH/src/github.com/zhs007/tradingdb/
 RUN go get -u github.com/golang/dep/cmd/dep \
     && dep ensure -vendor-only -v
 
-COPY /usr/local/go/lib/time/zoneinfo.zip /usr/local/go/lib/time/
-
 COPY . $GOPATH/src/github.com/zhs007/tradingdb
 
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o tradingdb . \
@@ -23,5 +21,6 @@ RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o tradingdb . \
 
 FROM scratch
 WORKDIR /home/tradingdb
+COPY --from=builder /usr/local/go/lib/time/zoneinfo.zip /usr/local/go/lib/time/zoneinfo.zip
 COPY --from=builder /home/tradingdb /home/tradingdb
 CMD ["./tradingdb"]
