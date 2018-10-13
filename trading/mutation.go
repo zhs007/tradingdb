@@ -38,10 +38,10 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 					return nil, ankadberr.NewError(ankadbpb.CODE_CTX_CURDB_ERR)
 				}
 
-				loc, err := time.LoadLocation("Asia/Shanghai")
-				if err != nil {
-					return nil, err
-				}
+				loc := time.FixedZone("CST", 3600*8)
+				// if err != nil {
+				// 	return nil, err
+				// }
 
 				code := params.Args["code"].(string)
 				name := params.Args["name"].(string)
