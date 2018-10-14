@@ -105,7 +105,7 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 					Close:        ci["close"].(int64),
 					High:         ci["high"].(int64),
 					Low:          ci["low"].(int64),
-					Volume:       ci["close"].(int64),
+					Volume:       ci["volume"].(int64),
 					OpenInterest: ci["openInterest"].(int64),
 				}
 
@@ -166,7 +166,7 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 						Close:        ci["close"].(int64),
 						High:         ci["high"].(int64),
 						Low:          ci["low"].(int64),
-						Volume:       ci["close"].(int64),
+						Volume:       ci["volume"].(int64),
 						OpenInterest: ci["openInterest"].(int64),
 					}
 
