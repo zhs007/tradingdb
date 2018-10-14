@@ -15,7 +15,7 @@ var queryType = graphql.NewObject(
 		Name: "Query",
 		Fields: graphql.Fields{
 			"candleChunks": &graphql.Field{
-				Type: candleType,
+				Type: candleChunkType,
 				Args: graphql.FieldConfigArgument{
 					"code": &graphql.ArgumentConfig{
 						Type: graphql.String,
