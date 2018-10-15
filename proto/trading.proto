@@ -26,3 +26,39 @@ message CandleChunk {
 message CandleChunkList {
     repeated string keyIDs = 1;
 }
+
+enum ORDERTYPE {
+    LIMIT = 0;
+}
+
+enum ORDERSIDE {
+    BUY = 0;
+    SELL = 1;
+}
+
+message Order {
+    string orderID = 1;
+    ORDERTYPE orderType = 2;
+    ORDERSIDE orderSide = 3;
+    int64 price = 4;
+    int64 volume = 5;
+    int64 startTime = 6;
+
+    int64 avgPrice = 7;
+    int64 doneVolume = 8;
+    int64 doneTime = 9;
+}
+
+message Trade {
+    string tradeID = 1;
+    string orderID = 2;
+    int64 curTime = 3;
+    int64 price = 4;
+    int64 volume = 5;
+}
+
+message TradingData {
+    string keyID = 1;
+    repeated Order orders = 2;
+    repeated Trade trades = 3;
+}

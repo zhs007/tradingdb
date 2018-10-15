@@ -18,16 +18,16 @@ var queryType = graphql.NewObject(
 				Type: candleChunkType,
 				Args: graphql.FieldConfigArgument{
 					"code": &graphql.ArgumentConfig{
-						Type: graphql.String,
+						Type: graphql.NewNonNull(graphql.String),
 					},
 					"name": &graphql.ArgumentConfig{
-						Type: graphql.String,
+						Type: graphql.NewNonNull(graphql.String),
 					},
 					"startTime": &graphql.ArgumentConfig{
-						Type: graphqlext.Timestamp,
+						Type: graphql.NewNonNull(graphqlext.Timestamp),
 					},
 					"endTime": &graphql.ArgumentConfig{
-						Type: graphqlext.Timestamp,
+						Type: graphql.NewNonNull(graphqlext.Timestamp),
 					},
 				},
 				Resolve: func(params graphql.ResolveParams) (interface{}, error) {
@@ -41,7 +41,7 @@ var queryType = graphql.NewObject(
 					st := params.Args["startTime"].(int64)
 					et := params.Args["endTime"].(int64)
 
-					lst := countKeyID(code, name, st, et)
+					lst := countCandleChunkKeyID(code, name, st, et)
 
 					retcc := &pb.CandleChunk{
 						Code:      code,
@@ -72,6 +72,33 @@ var queryType = graphql.NewObject(
 					// return data[idQuery], nil
 					// }
 					return retcc, nil
+				},
+			},
+			"tradingData": &graphql.Field{
+				Type: tradingDataType,
+				Args: graphql.FieldConfigArgument{
+					"name": &graphql.ArgumentConfig{
+						Type: graphql.NewNonNull(graphql.ID),
+					},
+				},
+				Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+					curdb := ankadb.GetContextValueDatabase(params.Context, interface{}("curdb"))
+					if curdb == nil {
+						return nil, ankadberr.NewError(ankadbpb.CODE_CTX_CURDB_ERR)
+					}
+
+					name := params.Args["name"].(string)
+
+					keyid := makeTradingDataKeyID(name)
+					buf, err := curdb.Get([]byte(keyid))
+					td := &pb.TradingData{KeyID: keyid}
+
+					err = proto.Unmarshal(buf, td)
+					if err != nil {
+						return nil, ankadberr.NewError(ankadbpb.CODE_PROTOBUF_ENCODE_ERR)
+					}
+
+					return td, nil
 				},
 			},
 		},

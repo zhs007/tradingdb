@@ -11,22 +11,63 @@ type Candle {
 type CandleChunk {
     code: String!
     name: String!
-    keyID: String!
+    keyID: ID!
     startTime: Timestamp!
     endTime: Timestamp!
     candles: [Candle]!
 }
 
 type CandleChunkList {
-    keyIDs: [String]!
+    keyIDs: [ID]!
+}
+
+enum ORDERTYPE {
+    ORDERTYPE_LIMIT
+}
+
+enum ORDERSIDE {
+    ORDERSIDE_BUY
+    ORDERSIDE_SELL
+}
+
+type Order {
+    orderID: ID!
+    orderType: ORDERTYPE!
+    orderSide: ORDERSIDE!
+    price: Int64!
+    volume: Int64!
+    startTime: Timestamp!
+
+    avgPrice: Int64!
+    doneVolume: Int64!
+    doneTime: Timestamp!
+}
+
+type Trade {
+    tradeID: ID!
+    orderID: ID!
+    curTime: Timestamp!
+    price: Int64!
+    volume: Int64!
+}
+
+type TradingData {
+    keyID: ID!
+    orders: [Order]!
+    trades: [Trade]!
 }
 
 type Query {
     candleChunks(code: String!, name: String!, startTime: Timestamp!, endTime: Timestamp!): CandleChunk!
+
+    tradingData(name: ID!): TradingData!
 }
 
 type Mutation {
     newCandleChunk(code: String!, name: String!, startTime: Timestamp!, endTime: Timestamp!): CandleChunk!
-    insertCandle(keyID: String!, candle: Candle!): CandleChunk!
+    insertCandle(keyID: ID!, candle: Candle!): CandleChunk!
+    insertCandles(keyID: ID!, candles: [Candle]!): CandleChunk!
     clearCandleChunk(name: String): CandleChunkList!
+
+    setTradingData(name: ID!, orders: [Order]!, trades: [Trade]!): TradingData!
 }

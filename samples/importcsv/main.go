@@ -289,5 +289,5 @@ func main() {
 	// c.Start("0.0.0.0:7788")
 	c.Start("47.90.46.159:7788")
 
-	importCSV(context.Background(), "tradingdb", "pta", "pta1601", "Asia/Shanghai", "TA601F.csv", c)
+	importCSV(context.Background(), "tradingdb", "pta", "pta1901", "Asia/Shanghai", "TA901F.csv", c)
 }

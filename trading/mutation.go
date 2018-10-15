@@ -3,6 +3,7 @@ package trading
 import (
 	"time"
 
+	"github.com/goinggo/mapstructure"
 	"github.com/golang/protobuf/proto"
 	"github.com/graphql-go/graphql"
 	"github.com/zhs007/ankadb"
@@ -46,7 +47,7 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 				code := params.Args["code"].(string)
 				name := params.Args["name"].(string)
 				st := params.Args["startTime"].(int64)
-				keyid := makeKeyID(code, name, st, loc)
+				keyid := makeCandleChunkKeyID(code, name, st, loc)
 
 				cc := &pb.CandleChunk{
 					Code:      code,
@@ -74,7 +75,7 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 			Description: "insert candle",
 			Args: graphql.FieldConfigArgument{
 				"keyID": &graphql.ArgumentConfig{
-					Type: graphql.NewNonNull(graphql.String),
+					Type: graphql.NewNonNull(graphql.ID),
 				},
 				"candle": &graphql.ArgumentConfig{
 					Type: graphql.NewNonNull(candleInputType),
@@ -99,17 +100,22 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 				// name := params.Args["name"].(string)
 				ci := params.Args["candle"].(map[string]interface{})
 
-				c := &pb.Candle{
-					CurTime:      ci["curTime"].(int64),
-					Open:         ci["open"].(int64),
-					Close:        ci["close"].(int64),
-					High:         ci["high"].(int64),
-					Low:          ci["low"].(int64),
-					Volume:       ci["volume"].(int64),
-					OpenInterest: ci["openInterest"].(int64),
+				var c pb.Candle
+				if err := mapstructure.Decode(ci, &c); err != nil {
+					return nil, ankadberr.NewError(ankadbpb.CODE_INPUTOBJ_PARSE_ERR)
 				}
 
-				cc.Candles = append(cc.Candles, c)
+				// c := &pb.Candle{
+				// 	CurTime:      ci["curTime"].(int64),
+				// 	Open:         ci["open"].(int64),
+				// 	Close:        ci["close"].(int64),
+				// 	High:         ci["high"].(int64),
+				// 	Low:          ci["low"].(int64),
+				// 	Volume:       ci["volume"].(int64),
+				// 	OpenInterest: ci["openInterest"].(int64),
+				// }
+
+				cc.Candles = append(cc.Candles, &c)
 				// keyid := makeKeyID(code, name, st)
 
 				// cc := &pb.CandleChunk{}
@@ -132,7 +138,7 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 			Description: "insert candles",
 			Args: graphql.FieldConfigArgument{
 				"keyID": &graphql.ArgumentConfig{
-					Type: graphql.NewNonNull(graphql.String),
+					Type: graphql.NewNonNull(graphql.ID),
 				},
 				"candles": &graphql.ArgumentConfig{
 					Type: graphql.NewNonNull(graphql.NewList(candleInputType)),
@@ -160,17 +166,21 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 				for _, cv := range lstci {
 					ci := cv.(map[string]interface{})
 
-					c := &pb.Candle{
-						CurTime:      ci["curTime"].(int64),
-						Open:         ci["open"].(int64),
-						Close:        ci["close"].(int64),
-						High:         ci["high"].(int64),
-						Low:          ci["low"].(int64),
-						Volume:       ci["volume"].(int64),
-						OpenInterest: ci["openInterest"].(int64),
+					var c pb.Candle
+					if err := mapstructure.Decode(ci, &c); err != nil {
+						return nil, ankadberr.NewError(ankadbpb.CODE_INPUTOBJ_PARSE_ERR)
 					}
+					// c := &pb.Candle{
+					// 	CurTime:      ci["curTime"].(int64),
+					// 	Open:         ci["open"].(int64),
+					// 	Close:        ci["close"].(int64),
+					// 	High:         ci["high"].(int64),
+					// 	Low:          ci["low"].(int64),
+					// 	Volume:       ci["volume"].(int64),
+					// 	OpenInterest: ci["openInterest"].(int64),
+					// }
 
-					cc.Candles = append(cc.Candles, c)
+					cc.Candles = append(cc.Candles, &c)
 				}
 
 				// keyid := makeKeyID(code, name, st)
@@ -221,6 +231,72 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 				}
 
 				return lst, nil
+			},
+		},
+		"setTradingData": &graphql.Field{
+			Type:        tradingDataType,
+			Description: "set TradingData",
+			Args: graphql.FieldConfigArgument{
+				"name": &graphql.ArgumentConfig{
+					Type: graphql.NewNonNull(graphql.ID),
+				},
+				"orders": &graphql.ArgumentConfig{
+					Type: graphql.NewNonNull(graphql.NewList(orderInputType)),
+				},
+				"trades": &graphql.ArgumentConfig{
+					Type: graphql.NewNonNull(graphql.NewList(tradeInputType)),
+				},
+			},
+			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+				curdb := ankadb.GetContextValueDatabase(params.Context, interface{}("curdb"))
+				if curdb == nil {
+					return nil, ankadberr.NewError(ankadbpb.CODE_CTX_CURDB_ERR)
+				}
+
+				name := params.Args["name"].(string)
+				keyid := makeTradingDataKeyID(name)
+
+				cc := &pb.TradingData{
+					KeyID: keyid,
+				}
+
+				lstorder := params.Args["orders"].([]interface{})
+
+				for _, cv := range lstorder {
+					ci := cv.(map[string]interface{})
+
+					var c pb.Order
+					if err := mapstructure.Decode(ci, &c); err != nil {
+						return nil, ankadberr.NewError(ankadbpb.CODE_INPUTOBJ_PARSE_ERR)
+					}
+
+					cc.Orders = append(cc.Orders, &c)
+				}
+
+				lsttrade := params.Args["trades"].([]interface{})
+
+				for _, cv := range lsttrade {
+					ci := cv.(map[string]interface{})
+
+					var c pb.Trade
+					if err := mapstructure.Decode(ci, &c); err != nil {
+						return nil, ankadberr.NewError(ankadbpb.CODE_INPUTOBJ_PARSE_ERR)
+					}
+
+					cc.Trades = append(cc.Trades, &c)
+				}
+
+				data, err := proto.Marshal(cc)
+				if err != nil {
+					return nil, ankadberr.NewError(ankadbpb.CODE_PROTOBUF_ENCODE_ERR)
+				}
+
+				err = curdb.Put([]byte(keyid), data)
+				if err != nil {
+					return nil, ankadberr.NewError(ankadbpb.CODE_DB_PUT_ERR)
+				}
+
+				return cc, nil
 			},
 		},
 	},

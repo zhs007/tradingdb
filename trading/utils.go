@@ -8,7 +8,11 @@ import (
 	"time"
 )
 
-func makeKeyID(code string, name string, startTime int64, loc *time.Location) string {
+func makeTradingDataKeyID(nameid string) string {
+	return "td:" + nameid
+}
+
+func makeCandleChunkKeyID(code string, name string, startTime int64, loc *time.Location) string {
 	tm := time.Unix(startTime, 0).In(loc)
 
 	if code == "pta" {
@@ -16,18 +20,18 @@ func makeKeyID(code string, name string, startTime int64, loc *time.Location) st
 
 		ch := tm.Hour()
 		if ch >= 21 {
-			return name + ":" + ts + "2"
+			return "cc:" + name + ":" + ts + "2"
 		} else if ch >= 13 {
-			return name + ":" + ts + "1"
+			return "cc:" + name + ":" + ts + "1"
 		}
 
-		return name + ":" + ts + "0"
+		return "cc:" + name + ":" + ts + "0"
 	}
 
-	return name + ":" + string(startTime)
+	return "cc:" + name + ":" + string(startTime)
 }
 
-func countKeyID(code string, name string, startTime int64, endTime int64) []string {
+func countCandleChunkKeyID(code string, name string, startTime int64, endTime int64) []string {
 	var lst []string
 
 	if endTime < startTime {
@@ -45,9 +49,9 @@ func countKeyID(code string, name string, startTime int64, endTime int64) []stri
 			tm := time.Unix(startTime, 0)
 			ts := tm.Format("20060102")
 
-			lst = append(lst, name+":"+ts+"0")
-			lst = append(lst, name+":"+ts+"1")
-			lst = append(lst, name+":"+ts+"2")
+			lst = append(lst, "cc:"+name+":"+ts+"0")
+			lst = append(lst, "cc:"+name+":"+ts+"1")
+			lst = append(lst, "cc:"+name+":"+ts+"2")
 
 			startTime += 24 * 60 * 60
 		}
