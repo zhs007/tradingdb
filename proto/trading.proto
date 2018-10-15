@@ -22,3 +22,7 @@ message CandleChunk {
     string keyID = 5;
     repeated Candle candles = 6;
 }
+
+message CandleChunkList {
+    repeated string keyIDs = 1;
+}

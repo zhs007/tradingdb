@@ -17,6 +17,10 @@ type CandleChunk {
     candles: [Candle]!
 }
 
+type CandleChunkList {
+    keyIDs: [String]!
+}
+
 type Query {
     candleChunks(code: String!, name: String!, startTime: Timestamp!, endTime: Timestamp!): CandleChunk!
 }
@@ -24,4 +28,5 @@ type Query {
 type Mutation {
     newCandleChunk(code: String!, name: String!, startTime: Timestamp!, endTime: Timestamp!): CandleChunk!
     insertCandle(keyID: String!, candle: Candle!): CandleChunk!
+    clearCandleChunk(name: String): CandleChunkList!
 }

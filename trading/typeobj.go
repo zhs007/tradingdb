@@ -61,3 +61,15 @@ var candleChunkType = graphql.NewObject(
 		},
 	},
 )
+
+// candleChunkListType - CandleChunkList
+var candleChunkListType = graphql.NewObject(
+	graphql.ObjectConfig{
+		Name: "CandleChunkList",
+		Fields: graphql.Fields{
+			"keyIDs": &graphql.Field{
+				Type: graphql.NewNonNull(graphql.NewList(graphql.String)),
+			},
+		},
+	},
+)

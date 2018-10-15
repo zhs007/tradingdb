@@ -190,5 +190,38 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 				return cc, nil
 			},
 		},
+		"clearCandleChunk": &graphql.Field{
+			Type:        candleChunkListType,
+			Description: "clear candlechunks",
+			Args: graphql.FieldConfigArgument{
+				"name": &graphql.ArgumentConfig{
+					Type: graphql.NewNonNull(graphql.String),
+				},
+			},
+			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+				curdb := ankadb.GetContextValueDatabase(params.Context, interface{}("curdb"))
+				if curdb == nil {
+					return nil, ankadberr.NewError(ankadbpb.CODE_CTX_CURDB_ERR)
+				}
+
+				name := params.Args["name"].(string)
+
+				lst := pb.CandleChunkList{}
+
+				curit := curdb.NewIteratorWithPrefix([]byte(name + ":"))
+				for curit.Next() {
+					key := curit.Key()
+
+					lst.KeyIDs = append(lst.KeyIDs, string(key))
+				}
+				curit.Release()
+				err := curit.Error()
+				if err != nil {
+					return lst, err
+				}
+
+				return lst, nil
+			},
+		},
 	},
 })

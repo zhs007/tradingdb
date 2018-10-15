@@ -16,15 +16,15 @@ func makeKeyID(code string, name string, startTime int64, loc *time.Location) st
 
 		ch := tm.Hour()
 		if ch >= 21 {
-			return name + ts + "2"
+			return name + ":" + ts + "2"
 		} else if ch >= 13 {
-			return name + ts + "1"
+			return name + ":" + ts + "1"
 		}
 
-		return name + ts + "0"
+		return name + ":" + ts + "0"
 	}
 
-	return name + string(startTime)
+	return name + ":" + string(startTime)
 }
 
 func countKeyID(code string, name string, startTime int64, endTime int64) []string {
