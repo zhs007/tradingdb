@@ -45,9 +45,9 @@ func countKeyID(code string, name string, startTime int64, endTime int64) []stri
 			tm := time.Unix(startTime, 0)
 			ts := tm.Format("20060102")
 
-			lst = append(lst, name+ts+"0")
-			lst = append(lst, name+ts+"1")
-			lst = append(lst, name+ts+"2")
+			lst = append(lst, name+":"+ts+"0")
+			lst = append(lst, name+":"+ts+"1")
+			lst = append(lst, name+":"+ts+"2")
 
 			startTime += 24 * 60 * 60
 		}
