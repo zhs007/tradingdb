@@ -26,6 +26,10 @@
 
 
 [[constraint]]
+  branch = "master"
+  name = "github.com/goinggo/mapstructure"
+
+[[constraint]]
   name = "github.com/golang/protobuf"
   version = "1.2.0"
 
