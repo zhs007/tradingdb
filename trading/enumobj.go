@@ -10,6 +10,10 @@ var enumORDERTYPEType = graphql.NewEnum(
 		Name:        "ORDERTYPE",
 		Description: "Order Type",
 		Values: graphql.EnumValueConfigMap{
+			"ORDERTYPE_INVALIDTYPE": &graphql.EnumValueConfig{
+				Value:       pb.ORDERTYPE_INVALIDTYPE,
+				Description: "invalid order type",
+			},
 			"ORDERTYPE_LIMIT": &graphql.EnumValueConfig{
 				Value:       pb.ORDERTYPE_LIMIT,
 				Description: "limit order",
@@ -23,6 +27,10 @@ var enumORDERSIDEType = graphql.NewEnum(
 		Name:        "ORDERSIDE",
 		Description: "Order Side",
 		Values: graphql.EnumValueConfigMap{
+			"ORDERSIDE_INVALIDSIDE": &graphql.EnumValueConfig{
+				Value:       pb.ORDERSIDE_INVALIDSIDE,
+				Description: "invalid side",
+			},
 			"ORDERSIDE_BUY": &graphql.EnumValueConfig{
 				Value:       pb.ORDERSIDE_BUY,
 				Description: "buy",

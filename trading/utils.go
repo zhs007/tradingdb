@@ -6,6 +6,8 @@ import (
 	"os"
 	"strconv"
 	"time"
+
+	pb "github.com/zhs007/tradingdb/proto"
 )
 
 func makeTradingDataKeyID(nameid string) string {
@@ -97,17 +99,17 @@ func ForEachCSV(filename string, local string, funcForEach FuncForEachCSV) error
 		lines++
 		if lines == 1 {
 			for i, v := range record {
-				if v == "" {
-					mapHead["curTime"] = i
-				} else {
-					mapHead[v] = i
-				}
+				// if v == "" {
+				// 	mapHead["curTime"] = i
+				// } else {
+				mapHead[v] = i
+				// }
 			}
 
 			continue
 		}
 
-		tm2, err := time.ParseInLocation("2006-01-02 15:04:05", record[mapHead["curTime"]], loc)
+		tm2, err := time.ParseInLocation("2006-01-02 15:04:05", record[mapHead["curtime"]], loc)
 		if err != nil {
 			return err
 		}
@@ -142,6 +144,7 @@ func ForEachCSV(filename string, local string, funcForEach FuncForEachCSV) error
 			return err
 		}
 
+		// use CandleInput
 		mapval := make(map[string]interface{})
 		mapval["curTime"] = tm2.Unix()
 		mapval["open"] = int64(open * 100)
@@ -164,6 +167,171 @@ func ForEachCSV(filename string, local string, funcForEach FuncForEachCSV) error
 	return nil
 }
 
+// ForEachOrderCSV - for each order csv file
+func ForEachOrderCSV(filename string, local string, funcForEach FuncForEachCSV) error {
+	loc, err := time.LoadLocation(local)
+	if err != nil {
+		return err
+	}
+
+	fr, err := os.Open(filename)
+	if err != nil {
+		return err
+	}
+
+	csvr := csv.NewReader(fr)
+	lines := 0
+	mapHead := make(map[string]int)
+
+	for {
+		record, err := csvr.Read()
+		if err == io.EOF {
+			err1 := funcForEach(nil)
+			if err1 != nil {
+				return err1
+			}
+
+			break
+		} else if err != nil {
+			return err
+		}
+
+		lines++
+		if lines == 1 {
+			for i, v := range record {
+				mapHead[v] = i
+			}
+
+			continue
+		}
+
+		cti, err := strconv.ParseInt(record[mapHead["createtime"]], 10, 64)
+		if err != nil {
+			return err
+		}
+
+		ct := time.Unix(cti, 0).In(loc)
+
+		tti, err := strconv.ParseInt(record[mapHead["tradetime"]], 10, 64)
+		if err != nil {
+			return err
+		}
+
+		tt := time.Unix(tti, 0).In(loc)
+
+		price, err := strconv.ParseFloat(record[mapHead["price"]], 64)
+		if err != nil {
+			return err
+		}
+
+		volume, err := strconv.ParseFloat(record[mapHead["volume"]], 64)
+		if err != nil {
+			return err
+		}
+
+		avgprice, err := strconv.ParseFloat(record[mapHead["avgprice"]], 64)
+		if err != nil {
+			return err
+		}
+
+		lastvolume, err := strconv.ParseFloat(record[mapHead["lastvolume"]], 64)
+		if err != nil {
+			return err
+		}
+
+		// use OrderInput
+		mapval := make(map[string]interface{})
+		mapval["orderID"] = record[mapHead["id"]]
+		mapval["orderType"] = orderType2GraphEnum(str2OrderType(record[mapHead["ordertype"]]))
+		mapval["orderSide"] = orderSide2GraphEnum(str2OrderSide(record[mapHead["orderside"]]))
+		mapval["price"] = int64(price * 100)
+		mapval["volume"] = int64(volume * 100)
+		mapval["startTime"] = ct.Unix()
+		mapval["avgPrice"] = int64(avgprice * 100)
+		mapval["doneVolume"] = int64((volume - lastvolume) * 100)
+		mapval["doneTime"] = tt.Unix()
+
+		err1 := funcForEach(mapval)
+		if err1 != nil {
+			return err1
+		}
+	}
+
+	return nil
+}
+
+// ForEachTradeCSV - for each trade csv file
+func ForEachTradeCSV(filename string, local string, funcForEach FuncForEachCSV) error {
+	loc, err := time.LoadLocation(local)
+	if err != nil {
+		return err
+	}
+
+	fr, err := os.Open(filename)
+	if err != nil {
+		return err
+	}
+
+	csvr := csv.NewReader(fr)
+	lines := 0
+	mapHead := make(map[string]int)
+
+	for {
+		record, err := csvr.Read()
+		if err == io.EOF {
+			err1 := funcForEach(nil)
+			if err1 != nil {
+				return err1
+			}
+
+			break
+		} else if err != nil {
+			return err
+		}
+
+		lines++
+		if lines == 1 {
+			for i, v := range record {
+				mapHead[v] = i
+			}
+
+			continue
+		}
+
+		cti, err := strconv.ParseInt(record[mapHead["tradetime"]], 10, 64)
+		if err != nil {
+			return err
+		}
+
+		ct := time.Unix(cti, 0).In(loc)
+
+		price, err := strconv.ParseFloat(record[mapHead["price"]], 64)
+		if err != nil {
+			return err
+		}
+
+		volume, err := strconv.ParseFloat(record[mapHead["volume"]], 64)
+		if err != nil {
+			return err
+		}
+
+		// use OrderInput
+		mapval := make(map[string]interface{})
+		mapval["tradeID"] = record[mapHead["id"]]
+		mapval["orderID"] = record[mapHead["orderid"]]
+		mapval["curTime"] = ct.Unix()
+		mapval["price"] = int64(price * 100)
+		mapval["volume"] = int64(volume * 100)
+
+		err1 := funcForEach(mapval)
+		if err1 != nil {
+			return err1
+		}
+	}
+
+	return nil
+}
+
 func getStringFromMapEx(m map[string]interface{}, k string, defval string) string {
 	v, ok := m[k]
 	if !ok {
@@ -171,4 +339,40 @@ func getStringFromMapEx(m map[string]interface{}, k string, defval string) strin
 	}
 
 	return v.(string)
+}
+
+func str2OrderType(str string) pb.ORDERTYPE {
+	if str == "limit" {
+		return pb.ORDERTYPE_LIMIT
+	}
+
+	return pb.ORDERTYPE_INVALIDTYPE
+}
+
+func str2OrderSide(str string) pb.ORDERSIDE {
+	if str == "buy" {
+		return pb.ORDERSIDE_BUY
+	} else if str == "sell" {
+		return pb.ORDERSIDE_SELL
+	}
+
+	return pb.ORDERSIDE_INVALIDSIDE
+}
+
+func orderType2GraphEnum(ot pb.ORDERTYPE) string {
+	if ot == pb.ORDERTYPE_LIMIT {
+		return "ORDERTYPE_LIMIT"
+	}
+
+	return "ORDERTYPE_INVALIDTYPE"
+}
+
+func orderSide2GraphEnum(os pb.ORDERSIDE) string {
+	if os == pb.ORDERSIDE_BUY {
+		return "ORDERSIDE_BUY"
+	} else if os == pb.ORDERSIDE_SELL {
+		return "ORDERSIDE_SELL"
+	}
+
+	return "ORDERSIDE_INVALIDSIDE"
 }

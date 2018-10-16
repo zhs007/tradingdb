@@ -28,12 +28,14 @@ message CandleChunkList {
 }
 
 enum ORDERTYPE {
-    LIMIT = 0;
+    INVALIDTYPE = 0;
+    LIMIT = 1;
 }
 
 enum ORDERSIDE {
-    BUY = 0;
-    SELL = 1;
+    INVALIDSIDE = 0;
+    BUY = 1;
+    SELL = 2;
 }
 
 message Order {
