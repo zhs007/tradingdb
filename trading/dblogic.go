@@ -42,3 +42,8 @@ func (logic *tradingDB) OnQuery(ctx context.Context, request string, values map[
 
 	return result, nil
 }
+
+// OnQueryStream -
+func (logic *tradingDB) OnQueryStream(ctx context.Context, request string, values map[string]interface{}, funcOnQueryStream ankadb.FuncOnQueryStream) error {
+	return nil
+}

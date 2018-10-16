@@ -31,7 +31,12 @@ var queryType = graphql.NewObject(
 					},
 				},
 				Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-					curdb := ankadb.GetContextValueDatabase(params.Context, interface{}("curdb"))
+					anka := ankadb.GetContextValueAnkaDB(params.Context, interface{}("ankadb"))
+					if anka == nil {
+						return nil, ankadberr.NewError(ankadbpb.CODE_CTX_ANKADB_ERR)
+					}
+
+					curdb := anka.MgrDB.GetDB("candles")
 					if curdb == nil {
 						return nil, ankadberr.NewError(ankadbpb.CODE_CTX_CURDB_ERR)
 					}
@@ -82,7 +87,12 @@ var queryType = graphql.NewObject(
 					},
 				},
 				Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-					curdb := ankadb.GetContextValueDatabase(params.Context, interface{}("curdb"))
+					anka := ankadb.GetContextValueAnkaDB(params.Context, interface{}("ankadb"))
+					if anka == nil {
+						return nil, ankadberr.NewError(ankadbpb.CODE_CTX_ANKADB_ERR)
+					}
+
+					curdb := anka.MgrDB.GetDB("trades")
 					if curdb == nil {
 						return nil, ankadberr.NewError(ankadbpb.CODE_CTX_CURDB_ERR)
 					}
