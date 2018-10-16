@@ -32,6 +32,9 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 				"endTime": &graphql.ArgumentConfig{
 					Type: graphql.NewNonNull(graphqlext.Timestamp),
 				},
+				"timeZone": &graphql.ArgumentConfig{
+					Type: graphql.String,
+				},
 			},
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 				anka := ankadb.GetContextValueAnkaDB(params.Context, interface{}("ankadb"))
@@ -44,9 +47,10 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 					return nil, ankadberr.NewError(ankadbpb.CODE_CTX_CURDB_ERR)
 				}
 
-				loc, err := time.LoadLocation("Asia/Shanghai")
+				tz := getStringFromMapEx(params.Args, "timeZone", "")
+				loc, err := time.LoadLocation(tz)
 				if err != nil {
-					return nil, err
+					return nil, ankadberr.NewError(ankadbpb.CODE_TIMEZONE_ERR)
 				}
 
 				code := params.Args["code"].(string)

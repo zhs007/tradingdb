@@ -31,7 +31,7 @@ func makeCandleChunkKeyID(code string, name string, startTime int64, loc *time.L
 	return "cc:" + name + ":" + string(startTime)
 }
 
-func countCandleChunkKeyID(code string, name string, startTime int64, endTime int64) []string {
+func countCandleChunkKeyID(code string, name string, startTime int64, endTime int64, loc *time.Location) []string {
 	var lst []string
 
 	if endTime < startTime {
@@ -39,14 +39,14 @@ func countCandleChunkKeyID(code string, name string, startTime int64, endTime in
 	}
 
 	if code == "pta" {
-		stm := time.Unix(startTime, 0)
-		etm := time.Unix(startTime, 0)
+		stm := time.Unix(startTime, 0).In(loc)
+		etm := time.Unix(startTime, 0).In(loc)
 		hoff := int(etm.Sub(stm).Hours())
 		doff := hoff / 24
 		lst = make([]string, 0, doff*2)
 
 		for startTime <= endTime {
-			tm := time.Unix(startTime, 0)
+			tm := time.Unix(startTime, 0).In(loc)
 			ts := tm.Format("20060102")
 
 			lst = append(lst, "cc:"+name+":"+ts+"0")
@@ -162,4 +162,13 @@ func ForEachCSV(filename string, local string, funcForEach FuncForEachCSV) error
 	}
 
 	return nil
+}
+
+func getStringFromMapEx(m map[string]interface{}, k string, defval string) string {
+	v, ok := m[k]
+	if !ok {
+		return defval
+	}
+
+	return v.(string)
 }

@@ -58,13 +58,13 @@ type TradingData {
 }
 
 type Query {
-    candleChunks(code: String!, name: String!, startTime: Timestamp!, endTime: Timestamp!): CandleChunk!
+    candleChunks(code: String!, name: String!, startTime: Timestamp!, endTime: Timestamp!, timeZone: String): CandleChunk!
 
     tradingData(name: ID!): TradingData!
 }
 
 type Mutation {
-    newCandleChunk(code: String!, name: String!, startTime: Timestamp!, endTime: Timestamp!): CandleChunk!
+    newCandleChunk(code: String!, name: String!, startTime: Timestamp!, endTime: Timestamp!, timeZone: String): CandleChunk!
     insertCandle(keyID: ID!, candle: Candle!): CandleChunk!
     insertCandles(keyID: ID!, candles: [Candle]!): CandleChunk!
     clearCandleChunk(name: String): CandleChunkList!

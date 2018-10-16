@@ -1,6 +1,8 @@
 package trading
 
 import (
+	"time"
+
 	"github.com/golang/protobuf/proto"
 	"github.com/graphql-go/graphql"
 	"github.com/zhs007/ankadb"
@@ -18,7 +20,7 @@ var queryType = graphql.NewObject(
 				Type: candleChunkType,
 				Args: graphql.FieldConfigArgument{
 					"code": &graphql.ArgumentConfig{
-						Type: graphql.NewNonNull(graphql.String),
+						Type: graphql.String,
 					},
 					"name": &graphql.ArgumentConfig{
 						Type: graphql.NewNonNull(graphql.String),
@@ -28,6 +30,9 @@ var queryType = graphql.NewObject(
 					},
 					"endTime": &graphql.ArgumentConfig{
 						Type: graphql.NewNonNull(graphqlext.Timestamp),
+					},
+					"timeZone": &graphql.ArgumentConfig{
+						Type: graphql.String,
 					},
 				},
 				Resolve: func(params graphql.ResolveParams) (interface{}, error) {
@@ -46,7 +51,13 @@ var queryType = graphql.NewObject(
 					st := params.Args["startTime"].(int64)
 					et := params.Args["endTime"].(int64)
 
-					lst := countCandleChunkKeyID(code, name, st, et)
+					tz := getStringFromMapEx(params.Args, "timeZone", "")
+					loc, err := time.LoadLocation(tz)
+					if err != nil {
+						return nil, ankadberr.NewError(ankadbpb.CODE_TIMEZONE_ERR)
+					}
+
+					lst := countCandleChunkKeyID(code, name, st, et, loc)
 
 					retcc := &pb.CandleChunk{
 						Code:      code,
