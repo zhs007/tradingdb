@@ -22,14 +22,14 @@ type CandleChunkList {
 }
 
 enum ORDERTYPE {
-    ORDERTYPE_INVALIDTYPE
-    ORDERTYPE_LIMIT
+    INVALIDTYPE
+    LIMIT
 }
 
 enum ORDERSIDE {
-    ORDERSIDE_INVALIDSIDE
-    ORDERSIDE_BUY
-    ORDERSIDE_SELL
+    INVALIDSIDE
+    BUY
+    SELL
 }
 
 type Order {

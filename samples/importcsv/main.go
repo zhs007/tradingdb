@@ -298,8 +298,8 @@ func importTradingData(ctx context.Context, name string, local string, orderfn s
 func main() {
 	c := ankadbclient.NewClient()
 
-	c.Start("0.0.0.0:7788")
-	// c.Start("47.90.46.159:7788")
+	// c.Start("0.0.0.0:7788")
+	c.Start("47.90.46.159:7788")
 
 	// importCSV(context.Background(), "pta", "pta1601", "Asia/Shanghai", "TA601F.csv", c)
 	// importCSV(context.Background(), "pta", "pta1605", "Asia/Shanghai", "TA605F.csv", c)

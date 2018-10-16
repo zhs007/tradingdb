@@ -360,19 +360,9 @@ func str2OrderSide(str string) pb.ORDERSIDE {
 }
 
 func orderType2GraphEnum(ot pb.ORDERTYPE) string {
-	if ot == pb.ORDERTYPE_LIMIT {
-		return "ORDERTYPE_LIMIT"
-	}
-
-	return "ORDERTYPE_INVALIDTYPE"
+	return pb.ORDERTYPE_name[int32(ot)]
 }
 
 func orderSide2GraphEnum(os pb.ORDERSIDE) string {
-	if os == pb.ORDERSIDE_BUY {
-		return "ORDERSIDE_BUY"
-	} else if os == pb.ORDERSIDE_SELL {
-		return "ORDERSIDE_SELL"
-	}
-
-	return "ORDERSIDE_INVALIDSIDE"
+	return pb.ORDERSIDE_name[int32(os)]
 }
