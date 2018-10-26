@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"github.com/zhs007/ankadb/client"
-	"github.com/zhs007/ankadb/err"
 	"github.com/zhs007/ankadb/proto"
 	"github.com/zhs007/tradingdb/trading"
 )

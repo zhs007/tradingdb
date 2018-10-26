@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/zhs007/ankadb"
@@ -31,7 +32,7 @@ func main() {
 
 	fmt.Print("tradingdb already start...\n")
 
-	ankaDB.Start()
+	ankaDB.Start(context.Background())
 
 	fmt.Print("tradingdb end...\n")
 

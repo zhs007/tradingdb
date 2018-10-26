@@ -6,9 +6,7 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/graphql-go/graphql"
 	"github.com/zhs007/ankadb"
-	"github.com/zhs007/ankadb/err"
 	"github.com/zhs007/ankadb/graphqlext"
-	"github.com/zhs007/ankadb/proto"
 	pb "github.com/zhs007/tradingdb/proto"
 )
 
@@ -38,12 +36,12 @@ var queryType = graphql.NewObject(
 				Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 					anka := ankadb.GetContextValueAnkaDB(params.Context, interface{}("ankadb"))
 					if anka == nil {
-						return nil, ankadberr.NewError(ankadbpb.CODE_CTX_ANKADB_ERR)
+						return nil, ankadb.ErrCtxAnkaDB
 					}
 
 					curdb := anka.MgrDB.GetDB("candles")
 					if curdb == nil {
-						return nil, ankadberr.NewError(ankadbpb.CODE_CTX_CURDB_ERR)
+						return nil, ankadb.ErrCtxCurDB
 					}
 
 					code := params.Args["code"].(string)
@@ -54,7 +52,7 @@ var queryType = graphql.NewObject(
 					tz := getStringFromMapEx(params.Args, "timeZone", "")
 					loc, err := time.LoadLocation(tz)
 					if err != nil {
-						return nil, ankadberr.NewError(ankadbpb.CODE_TIMEZONE_ERR)
+						return nil, err
 					}
 
 					lst := countCandleChunkKeyID(code, name, st, et, loc)
@@ -74,7 +72,7 @@ var queryType = graphql.NewObject(
 
 							err = proto.Unmarshal(buf, cc)
 							if err != nil {
-								return nil, ankadberr.NewError(ankadbpb.CODE_PROTOBUF_ENCODE_ERR)
+								return nil, err
 							}
 
 							for _, c := range cc.Candles {
@@ -100,12 +98,12 @@ var queryType = graphql.NewObject(
 				Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 					anka := ankadb.GetContextValueAnkaDB(params.Context, interface{}("ankadb"))
 					if anka == nil {
-						return nil, ankadberr.NewError(ankadbpb.CODE_CTX_ANKADB_ERR)
+						return nil, ankadb.ErrCtxAnkaDB
 					}
 
 					curdb := anka.MgrDB.GetDB("trades")
 					if curdb == nil {
-						return nil, ankadberr.NewError(ankadbpb.CODE_CTX_CURDB_ERR)
+						return nil, ankadb.ErrCtxCurDB
 					}
 
 					name := params.Args["name"].(string)
@@ -116,7 +114,7 @@ var queryType = graphql.NewObject(
 
 					err = proto.Unmarshal(buf, td)
 					if err != nil {
-						return nil, ankadberr.NewError(ankadbpb.CODE_PROTOBUF_ENCODE_ERR)
+						return nil, err
 					}
 
 					return td, nil

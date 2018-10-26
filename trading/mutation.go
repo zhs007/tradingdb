@@ -7,9 +7,7 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/graphql-go/graphql"
 	"github.com/zhs007/ankadb"
-	"github.com/zhs007/ankadb/err"
 	"github.com/zhs007/ankadb/graphqlext"
-	"github.com/zhs007/ankadb/proto"
 	pb "github.com/zhs007/tradingdb/proto"
 )
 
@@ -39,18 +37,18 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 				anka := ankadb.GetContextValueAnkaDB(params.Context, interface{}("ankadb"))
 				if anka == nil {
-					return nil, ankadberr.NewError(ankadbpb.CODE_CTX_ANKADB_ERR)
+					return nil, ankadb.ErrCtxAnkaDB
 				}
 
 				curdb := anka.MgrDB.GetDB("candles")
 				if curdb == nil {
-					return nil, ankadberr.NewError(ankadbpb.CODE_CTX_CURDB_ERR)
+					return nil, ankadb.ErrCtxCurDB
 				}
 
 				tz := getStringFromMapEx(params.Args, "timeZone", "")
 				loc, err := time.LoadLocation(tz)
 				if err != nil {
-					return nil, ankadberr.NewError(ankadbpb.CODE_TIMEZONE_ERR)
+					return nil, err
 				}
 
 				code := params.Args["code"].(string)
@@ -68,12 +66,12 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 
 				data, err := proto.Marshal(cc)
 				if err != nil {
-					return nil, ankadberr.NewError(ankadbpb.CODE_PROTOBUF_ENCODE_ERR)
+					return nil, err
 				}
 
 				err = curdb.Put([]byte(keyid), data)
 				if err != nil {
-					return nil, ankadberr.NewError(ankadbpb.CODE_DB_PUT_ERR)
+					return nil, err
 				}
 
 				return cc, nil
@@ -93,12 +91,12 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 				anka := ankadb.GetContextValueAnkaDB(params.Context, interface{}("ankadb"))
 				if anka == nil {
-					return nil, ankadberr.NewError(ankadbpb.CODE_CTX_ANKADB_ERR)
+					return nil, ankadb.ErrCtxAnkaDB
 				}
 
 				curdb := anka.MgrDB.GetDB("candles")
 				if curdb == nil {
-					return nil, ankadberr.NewError(ankadbpb.CODE_CTX_CURDB_ERR)
+					return nil, ankadb.ErrCtxCurDB
 				}
 
 				keyID := params.Args["keyID"].(string)
@@ -108,7 +106,7 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 
 				err = proto.Unmarshal(buf, cc)
 				if err != nil {
-					return nil, ankadberr.NewError(ankadbpb.CODE_PROTOBUF_ENCODE_ERR)
+					return nil, err
 				}
 
 				// name := params.Args["name"].(string)
@@ -116,7 +114,7 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 
 				var c pb.Candle
 				if err := mapstructure.Decode(ci, &c); err != nil {
-					return nil, ankadberr.NewError(ankadbpb.CODE_INPUTOBJ_PARSE_ERR)
+					return nil, err
 				}
 
 				// c := &pb.Candle{
@@ -136,12 +134,12 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 
 				data, err := proto.Marshal(cc)
 				if err != nil {
-					return nil, ankadberr.NewError(ankadbpb.CODE_PROTOBUF_ENCODE_ERR)
+					return nil, err
 				}
 
 				err = curdb.Put([]byte(keyID), data)
 				if err != nil {
-					return nil, ankadberr.NewError(ankadbpb.CODE_DB_PUT_ERR)
+					return nil, err
 				}
 
 				return cc, nil
@@ -161,12 +159,12 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 				anka := ankadb.GetContextValueAnkaDB(params.Context, interface{}("ankadb"))
 				if anka == nil {
-					return nil, ankadberr.NewError(ankadbpb.CODE_CTX_ANKADB_ERR)
+					return nil, ankadb.ErrCtxAnkaDB
 				}
 
 				curdb := anka.MgrDB.GetDB("candles")
 				if curdb == nil {
-					return nil, ankadberr.NewError(ankadbpb.CODE_CTX_CURDB_ERR)
+					return nil, ankadb.ErrCtxCurDB
 				}
 
 				keyID := params.Args["keyID"].(string)
@@ -176,7 +174,7 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 
 				err = proto.Unmarshal(buf, cc)
 				if err != nil {
-					return nil, ankadberr.NewError(ankadbpb.CODE_PROTOBUF_ENCODE_ERR)
+					return nil, err
 				}
 
 				// name := params.Args["name"].(string)
@@ -187,7 +185,7 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 
 					var c pb.Candle
 					if err := mapstructure.Decode(ci, &c); err != nil {
-						return nil, ankadberr.NewError(ankadbpb.CODE_INPUTOBJ_PARSE_ERR)
+						return nil, err
 					}
 					// c := &pb.Candle{
 					// 	CurTime:      ci["curTime"].(int64),
@@ -208,12 +206,12 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 
 				data, err := proto.Marshal(cc)
 				if err != nil {
-					return nil, ankadberr.NewError(ankadbpb.CODE_PROTOBUF_ENCODE_ERR)
+					return nil, err
 				}
 
 				err = curdb.Put([]byte(keyID), data)
 				if err != nil {
-					return nil, ankadberr.NewError(ankadbpb.CODE_DB_PUT_ERR)
+					return nil, err
 				}
 
 				return cc, nil
@@ -230,12 +228,12 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 				anka := ankadb.GetContextValueAnkaDB(params.Context, interface{}("ankadb"))
 				if anka == nil {
-					return nil, ankadberr.NewError(ankadbpb.CODE_CTX_ANKADB_ERR)
+					return nil, ankadb.ErrCtxAnkaDB
 				}
 
 				curdb := anka.MgrDB.GetDB("candles")
 				if curdb == nil {
-					return nil, ankadberr.NewError(ankadbpb.CODE_CTX_CURDB_ERR)
+					return nil, ankadb.ErrCtxCurDB
 				}
 
 				name := params.Args["name"].(string)
@@ -274,12 +272,12 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 				anka := ankadb.GetContextValueAnkaDB(params.Context, interface{}("ankadb"))
 				if anka == nil {
-					return nil, ankadberr.NewError(ankadbpb.CODE_CTX_ANKADB_ERR)
+					return nil, ankadb.ErrCtxAnkaDB
 				}
 
 				curdb := anka.MgrDB.GetDB("trades")
 				if curdb == nil {
-					return nil, ankadberr.NewError(ankadbpb.CODE_CTX_CURDB_ERR)
+					return nil, ankadb.ErrCtxCurDB
 				}
 
 				name := params.Args["name"].(string)
@@ -296,7 +294,7 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 
 					var c pb.Order
 					if err := mapstructure.Decode(ci, &c); err != nil {
-						return nil, ankadberr.NewError(ankadbpb.CODE_INPUTOBJ_PARSE_ERR)
+						return nil, err
 					}
 
 					cc.Orders = append(cc.Orders, &c)
@@ -309,7 +307,7 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 
 					var c pb.Trade
 					if err := mapstructure.Decode(ci, &c); err != nil {
-						return nil, ankadberr.NewError(ankadbpb.CODE_INPUTOBJ_PARSE_ERR)
+						return nil, err
 					}
 
 					cc.Trades = append(cc.Trades, &c)
@@ -317,12 +315,12 @@ var mutationType = graphql.NewObject(graphql.ObjectConfig{
 
 				data, err := proto.Marshal(cc)
 				if err != nil {
-					return nil, ankadberr.NewError(ankadbpb.CODE_PROTOBUF_ENCODE_ERR)
+					return nil, err
 				}
 
 				err = curdb.Put([]byte(keyid), data)
 				if err != nil {
-					return nil, ankadberr.NewError(ankadbpb.CODE_DB_PUT_ERR)
+					return nil, err
 				}
 
 				return cc, nil
