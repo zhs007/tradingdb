@@ -37,10 +37,10 @@
   name = "github.com/graphql-go/graphql"
   version = "0.7.6"
 
-[[constraint]]
-  branch = "master"
-  name = "github.com/zhs007/ankadb"
-
 [prune]
   go-tests = true
   unused-packages = true
+
+[[constraint]]
+  name = "github.com/zhs007/ankadb"
+  version = "0.1.0"

@@ -22,9 +22,9 @@ func main() {
 
 	// ankadb.SaveConfig("./cfg/tmp.yaml", cfg)
 
-	ankaDB := ankadb.NewAnkaDB(*cfg, trading.NewTradingDB())
-	if ankaDB == nil {
-		fmt.Print("tradingdb.NewAnkaDB() ")
+	ankaDB, err := ankadb.NewAnkaDB(*cfg, trading.NewTradingDB())
+	if err != nil {
+		fmt.Print("tradingdb.NewAnkaDB() " + err.Error())
 
 		return
 	}

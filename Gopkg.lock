@@ -63,7 +63,6 @@
   revision = "6b91fda63f2e36186f1c9d0e48578defb69c5d43"
 
 [[projects]]
-  branch = "master"
   name = "github.com/zhs007/ankadb"
   packages = [
     ".",
@@ -73,7 +72,8 @@
     "graphqlext",
     "proto"
   ]
-  revision = "918af24ede9e8f7e312a948b333931a12f170e55"
+  revision = "bd73dbb3afa3c4d7deedd43197c48809e9cd16b4"
+  version = "v0.1.0"
 
 [[projects]]
   branch = "master"
@@ -164,6 +164,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "02e500b1aa27bec81ba24a4b0e43d88267b53b34f6e118c6cac540d47574c136"
+  inputs-digest = "b705e6503902c9c75c324124fdfd170ed06edf1d2677d7af98a6ecd1e494dfc3"
   solver-name = "gps-cdcl"
   solver-version = 1
