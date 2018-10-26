@@ -3,10 +3,10 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 
 	"github.com/zhs007/ankadb/client"
-	"github.com/zhs007/ankadb/proto"
 	"github.com/zhs007/tradingdb/trading"
 )
 
@@ -69,8 +69,8 @@ func insCandles(ctx context.Context, code string, name string, lst [](map[string
 
 	fmt.Print(queryReply.Result)
 
-	if queryReply.Code != ankadbpb.CODE_OK {
-		return ankadberr.NewError(queryReply.Code)
+	if queryReply.Err != "" {
+		return errors.New(queryReply.Err)
 	}
 
 	var mapResult map[string]interface{}
@@ -81,17 +81,17 @@ func insCandles(ctx context.Context, code string, name string, lst [](map[string
 	var mapData map[string]interface{}
 	var ok bool
 	if mapData, ok = mapResult["data"].(map[string]interface{}); !ok {
-		return ankadberr.NewError(ankadbpb.CODE_RESULT_NO_DATA)
+		return errors.New("result no data")
 	}
 
 	var mapNewCC map[string]interface{}
 	if mapNewCC, ok = mapData["newCandleChunk"].(map[string]interface{}); !ok {
-		return ankadberr.NewError(ankadbpb.CODE_RESULT_DATA_INVALID)
+		return errors.New("result data invalid")
 	}
 
 	var curKeyID string
 	if curKeyID, ok = mapNewCC["keyID"].(string); !ok {
-		return ankadberr.NewError(ankadbpb.CODE_RESULT_DATA_INVALID)
+		return errors.New("result data invalid")
 	}
 
 	// curKeyID := retNewCC.(string)
@@ -126,8 +126,8 @@ func insCandles(ctx context.Context, code string, name string, lst [](map[string
 
 	queryReply1, err1 := c.Query(ctx, strInsertChandles, string(buf))
 
-	if queryReply1.Code != ankadbpb.CODE_OK {
-		return ankadberr.NewError(queryReply1.Code)
+	if queryReply1.Err != "" {
+		return errors.New(queryReply1.Err)
 	}
 
 	fmt.Printf("queryReply " + queryReply1.Result + "\n")
@@ -196,8 +196,8 @@ func insTradingData(ctx context.Context, name string, lstorder [](map[string]int
 
 	fmt.Print(queryReply.Result)
 
-	if queryReply.Code != ankadbpb.CODE_OK {
-		return ankadberr.NewError(queryReply.Code)
+	if queryReply.Err != "" {
+		return errors.New(queryReply.Err)
 	}
 
 	// var mapResult map[string]interface{}
