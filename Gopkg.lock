@@ -71,8 +71,8 @@
     "graphqlext",
     "proto"
   ]
-  revision = "b37bf8c9493ec5041f10d640611a5c23c6696321"
-  version = "v0.2.2"
+  revision = "6a348878a57f9c437fc4e72d5e06652a8d642549"
+  version = "v0.2.3"
 
 [[projects]]
   branch = "master"
@@ -163,6 +163,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "c99e0bea0c2dc8bd72f43ea96758e44ce05fd01a840fd7e3c77c7b4f935e04c6"
+  inputs-digest = "0ebf69b409489dba8a9e7c77bb49deaa6227183e45c541471cb0ba7aa0eb7a40"
   solver-name = "gps-cdcl"
   solver-version = 1
