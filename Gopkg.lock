@@ -71,8 +71,8 @@
     "graphqlext",
     "proto"
   ]
-  revision = "2aba4684dc064c24d33b4cc0f7dd2316459f0a22"
-  version = "v0.2.1"
+  revision = "b37bf8c9493ec5041f10d640611a5c23c6696321"
+  version = "v0.2.2"
 
 [[projects]]
   branch = "master"
@@ -92,7 +92,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "731415f00dce967a133e841b3079eda31c996761"
+  revision = "95b1ffbd15a57cc5abb3f04402b9e8ec0016a52c"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -119,7 +119,7 @@
   branch = "master"
   name = "google.golang.org/genproto"
   packages = ["googleapis/rpc/status"]
-  revision = "94acd270e44e65579b9ee3cdab25034d33fed608"
+  revision = "8b5d7a19e2d98fbad9aaf9c599776bf066d7c70f"
 
 [[projects]]
   name = "google.golang.org/grpc"
@@ -163,6 +163,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "0de84df67f5e2b2ba89f63905db17274987fa763cf84e449d21a22dee5efa6a3"
+  inputs-digest = "c99e0bea0c2dc8bd72f43ea96758e44ce05fd01a840fd7e3c77c7b4f935e04c6"
   solver-name = "gps-cdcl"
   solver-version = 1
