@@ -33,9 +33,15 @@ enum ORDERTYPE {
 }
 
 enum ORDERSIDE {
-    INVALIDSIDE = 0;
-    BUY = 1;
-    SELL = 2;
+    INVALID_ORDERSIDE = 0;
+    ORDER_BUY = 1;
+    ORDER_SELL = 2;
+}
+
+enum TRADESIDE {
+    INVALID_TRADESIDE = 0;
+    TRADE_BUY = 1;
+    TRADE_SELL = 2;
 }
 
 message Order {
@@ -63,4 +69,11 @@ message TradingData {
     string keyID = 1;
     repeated Order orders = 2;
     repeated Trade trades = 3;
+}
+
+message MarketTradeData {
+    int64 msTime = 1;
+    int64 price = 2;
+    int64 volume = 3;
+    TRADESIDE side = 4;
 }

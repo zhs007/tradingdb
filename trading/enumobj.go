@@ -28,15 +28,15 @@ var enumORDERSIDEType = graphql.NewEnum(
 		Description: "Order Side",
 		Values: graphql.EnumValueConfigMap{
 			"INVALIDSIDE": &graphql.EnumValueConfig{
-				Value:       pb.ORDERSIDE_INVALIDSIDE,
+				Value:       pb.ORDERSIDE_INVALID_ORDERSIDE,
 				Description: "invalid side",
 			},
 			"BUY": &graphql.EnumValueConfig{
-				Value:       pb.ORDERSIDE_BUY,
+				Value:       pb.ORDERSIDE_ORDER_BUY,
 				Description: "buy",
 			},
 			"SELL": &graphql.EnumValueConfig{
-				Value:       pb.ORDERSIDE_SELL,
+				Value:       pb.ORDERSIDE_ORDER_SELL,
 				Description: "sell",
 			},
 		},

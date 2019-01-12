@@ -351,12 +351,12 @@ func str2OrderType(str string) pb.ORDERTYPE {
 
 func str2OrderSide(str string) pb.ORDERSIDE {
 	if str == "buy" {
-		return pb.ORDERSIDE_BUY
+		return pb.ORDERSIDE_ORDER_BUY
 	} else if str == "sell" {
-		return pb.ORDERSIDE_SELL
+		return pb.ORDERSIDE_ORDER_SELL
 	}
 
-	return pb.ORDERSIDE_INVALIDSIDE
+	return pb.ORDERSIDE_INVALID_ORDERSIDE
 }
 
 func orderType2GraphEnum(ot pb.ORDERTYPE) string {
