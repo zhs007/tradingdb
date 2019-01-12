@@ -77,3 +77,18 @@ message MarketTradeData {
     int64 volume = 3;
     TRADESIDE side = 4;
 }
+
+message MarketContractData {
+    string categoryCode = 1;
+    string contractCode = 2;
+}
+
+message MarketCategoryData {
+    string categoryCode = 1;
+    repeated MarketContractData contracts = 2;
+}
+
+message MarketData {
+    string marketCode = 1;
+    repeated MarketCategoryData categories = 2;
+}
