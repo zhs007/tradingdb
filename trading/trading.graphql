@@ -26,16 +26,16 @@ enum ORDERTYPE {
     LIMIT
 }
 
-enum ORDERSIDE {
-    INVALIDSIDE
-    BUY
-    SELL
+enum TRADINGSIDE {
+    INVALID_TRADINGSIDE
+    TRADING_BUY
+    TRADING_SELL
 }
 
 type Order {
     orderID: ID!
     orderType: ORDERTYPE!
-    orderSide: ORDERSIDE!
+    side: TRADINGSIDE!
     price: Int64!
     volume: Int64!
     startTime: Timestamp!
@@ -57,6 +57,18 @@ type TradingData {
     keyID: ID!
     orders: [Order]!
     trades: [Trade]!
+}
+
+type MarketTradeData {
+    msTime: Int64!
+    price: Int64!
+    volume: Int64!
+    side: TRADINGSIDE!
+    marketTradeID: ID!
+}
+
+type MarketTradeDataList {
+    repeated MarketTradeData trades = 1;
 }
 
 type Query {

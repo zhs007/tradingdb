@@ -243,7 +243,7 @@ func ForEachOrderCSV(filename string, local string, funcForEach FuncForEachCSV) 
 		mapval := make(map[string]interface{})
 		mapval["orderID"] = record[mapHead["id"]]
 		mapval["orderType"] = orderType2GraphEnum(str2OrderType(record[mapHead["ordertype"]]))
-		mapval["orderSide"] = orderSide2GraphEnum(str2OrderSide(record[mapHead["orderside"]]))
+		mapval["side"] = tradingSide2GraphEnum(str2TradingSide(record[mapHead["orderside"]]))
 		mapval["price"] = int64(price * 100)
 		mapval["volume"] = int64(volume * 100)
 		mapval["startTime"] = ct.Unix()
@@ -349,20 +349,20 @@ func str2OrderType(str string) pb.ORDERTYPE {
 	return pb.ORDERTYPE_INVALIDTYPE
 }
 
-func str2OrderSide(str string) pb.ORDERSIDE {
+func str2TradingSide(str string) pb.TRADINGSIDE {
 	if str == "buy" {
-		return pb.ORDERSIDE_ORDER_BUY
+		return pb.TRADINGSIDE_TRADING_BUY
 	} else if str == "sell" {
-		return pb.ORDERSIDE_ORDER_SELL
+		return pb.TRADINGSIDE_TRADING_SELL
 	}
 
-	return pb.ORDERSIDE_INVALID_ORDERSIDE
+	return pb.TRADINGSIDE_INVALID_TRADINGSIDE
 }
 
 func orderType2GraphEnum(ot pb.ORDERTYPE) string {
 	return pb.ORDERTYPE_name[int32(ot)]
 }
 
-func orderSide2GraphEnum(os pb.ORDERSIDE) string {
-	return pb.ORDERSIDE_name[int32(os)]
+func tradingSide2GraphEnum(os pb.TRADINGSIDE) string {
+	return pb.TRADINGSIDE_name[int32(os)]
 }
