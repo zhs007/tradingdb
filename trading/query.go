@@ -39,7 +39,7 @@ var queryType = graphql.NewObject(
 						return nil, ankadb.ErrCtxAnkaDB
 					}
 
-					curdb := anka.MgrDB.GetDB("candles")
+					curdb := anka.GetDBMgr().GetDB("candles")
 					if curdb == nil {
 						return nil, ankadb.ErrCtxCurDB
 					}
@@ -101,7 +101,7 @@ var queryType = graphql.NewObject(
 						return nil, ankadb.ErrCtxAnkaDB
 					}
 
-					curdb := anka.MgrDB.GetDB("trades")
+					curdb := anka.GetDBMgr().GetDB("trades")
 					if curdb == nil {
 						return nil, ankadb.ErrCtxCurDB
 					}

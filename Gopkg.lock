@@ -63,6 +63,7 @@
   revision = "b001fa50d6b27f3f0bb175a87d0cb55426d0a0ae"
 
 [[projects]]
+  branch = "v0.3"
   name = "github.com/zhs007/ankadb"
   packages = [
     ".",
@@ -71,8 +72,7 @@
     "graphqlext",
     "proto"
   ]
-  revision = "eff880a4a3071447e6f9c7cc366f3a39ebc79719"
-  version = "v0.2.9"
+  revision = "298ef1a5350b2568877f1c5cca5339796f00942d"
 
 [[projects]]
   branch = "master"
@@ -86,13 +86,13 @@
     "internal/timeseries",
     "trace"
   ]
-  revision = "927f97764cc334a6575f4b7a1584a147864d5723"
+  revision = "d26f9f9a57f3fab6a695bec0d84433c2c50f8bbf"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "cb59ee3660675d463e86971646692ea3e470021c"
+  revision = "302c3dd5f1cc82baae8e44d9c3178e89b6e2b345"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -119,7 +119,7 @@
   branch = "master"
   name = "google.golang.org/genproto"
   packages = ["googleapis/rpc/status"]
-  revision = "bd9b4fb69e2ffd37621a6caa54dcbead29b546f2"
+  revision = "8ac453e89fca495c0d17f98932642f392e2a11f3"
 
 [[projects]]
   name = "google.golang.org/grpc"
@@ -156,8 +156,8 @@
     "status",
     "tap"
   ]
-  revision = "df014850f6dee74ba2fc94874043a9f3f75fbfd8"
-  version = "v1.17.0"
+  revision = "a02b0774206b209466313a0b525d2c738fe407eb"
+  version = "v1.18.0"
 
 [[projects]]
   name = "gopkg.in/yaml.v2"
@@ -168,6 +168,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "3184e6b19b4dcea0784963089487991d787e055aef51409620dc8eb61a84f5bc"
+  inputs-digest = "076acacce824046c8625460bfacc51e6e5c44ea0a9254cdfe07d2802b403d5ce"
   solver-name = "gps-cdcl"
   solver-version = 1

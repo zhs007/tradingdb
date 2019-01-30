@@ -43,4 +43,4 @@
 
 [[constraint]]
   name = "github.com/zhs007/ankadb"
-  version = "0.2.9"
+  branch = "v0.3"
